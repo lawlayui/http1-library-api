@@ -27,6 +27,17 @@ class Models {
             throw err;
         }
     }
+
+    async update_users(username, role) {
+        try {
+            const sql = `update users set role = ? where username = ?`
+            await db.get_db()
+            await db.connect.execute(sql, [role, username]);
+            return 'succes';
+        } catch(err) {
+            throw err;
+        }
+    }
 }
 
 const models = new Models();

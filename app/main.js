@@ -59,6 +59,9 @@ class App {
 			} else {
 				res.writeHead(404, {'content-type': 'text/plain'});
 				res.end('resource not found');
+				if (res.writableEnded || res.finished) {
+					this.logger(req, res);
+				}
 			}
 	    });
 	    this.server.listen(port,host,() => {

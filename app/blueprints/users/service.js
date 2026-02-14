@@ -27,12 +27,31 @@ class Service {
         const parms1 = [parms[0], password_hash, parms[2]];
 
         const result = await models.insert_users(sql, parms1);
-        const payload = {
-            username: parms1[0],
-            user_id: result.insertId
+        return 'account created successfully';
+    }
+
+    async login(username, password_real) {
+        let result = await models.select_users('select * from users where username = ?', [username]);
+        result = result[0][0]
+        if (security.verifyHash(password_real, result['password'])) {
+            const payload = {
+                user_id: result['id'],
+                role: result['role']
+            }
+            const token = security.generateJWT(payload);
+            return token;
         }
-        const token = security.generateJWT(payload);
-        return token;
+
+    }
+
+    async update_role(username, role) {
+        try {
+            await models.update_users(username, role);
+            return;
+        } catch(err) {
+            console.log(err);
+            return;
+        }
     }
 
 
