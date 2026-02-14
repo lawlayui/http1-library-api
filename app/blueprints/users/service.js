@@ -1,4 +1,5 @@
 const models = require('./models');
+const security = require('../../core/security');
 
 
 class Service {
@@ -7,24 +8,32 @@ class Service {
     }
 
     async select_users(sql, parms) {
-        if (parms === null) {
-            console.log("return error");
-            return {
+        if (!parms) {
+            return [{
                 status: 'error',
-                message: 'parms is null'
-            }
+                message: 'Minimal 1 params'
+            }]
         }
-        const result = models.select_users(sql, parms);
-        result
-            .then((v) => {
-                console.log("Dari service: ", result);
-                return v;
-            })
-            .catch((err) => {
-                console.log(err);
-                return err;
-            });
+        try {
+            const fetch = await models.select_users(sql, parms);
+            return fetch
+        } catch (err) {
+            throw new Error(err);
+        }
     } 
+
+    async insert_users(sql, parms) {
+        const password_hash = await security.generateHash(parms[1], 10);
+        const parms1 = [parms[0], password_hash, parms[2]];
+
+        const result = await models.insert_users(sql, parms1);
+        const payload = {
+            username: parms1[0],
+            user_id: result.insertId
+        }
+        const token = security.generateJWT(payload);
+        return token;
+    }
 
 
 }

@@ -6,23 +6,26 @@ class Models {
     }
 
     async select_users(sql, parms) {
-        db.get_db()
-            .then(() => {
-                db.query(sql, parms)
-                    .then((value) => {
-                        console.log("Dari models: ", value);
-                        return value;
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            })
-            .catch((err) => {
-                return {
-                    status: 'error',
-                    message: toString(err)
-                }
-            });
+        try{
+            await db.get_db()
+            const fetch = await db.connect.execute(sql, parms);
+            return fetch;
+        } catch (err) {
+            console.error(err);
+            return {
+                status: 'error',
+                code: 500            }
+        }
+    }
+
+    async insert_users(sql, parms) {
+        try {
+            await db.get_db()
+            await db.connect.execute(sql, parms);
+            return 'succes';
+        } catch (err) {
+            throw err;
+        }
     }
 }
 
