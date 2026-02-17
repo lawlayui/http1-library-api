@@ -1,5 +1,8 @@
+const userController = require('../controller/userController');
 
 
 module.exports = {
-    'GET /': (req, res) => {res.end("Hello World")}
+    'GET /users': userController.getUsers,
+    'GET /users/': userController.getUsersById,
+    'POST /users': userController.createUsers
 }
