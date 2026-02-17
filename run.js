@@ -1,12 +1,10 @@
 const http = require('http'); //Default http/1.1
-const middleware = require('./src/middleware'); //Get middleware
-const matchRoute = require('./src/routes'); //Match rotue
+const middleware = require('./src/middleware');
+const matchRoute = require('./src/routes');
 
-// Execution flow: middleware is executed, then match route is executed
 
 const server = http.createServer(async (req, res) => {
     
-    // Handling unexpected bugs
     try {
         await middleware(req, res);
         await matchRoute(req, res);
