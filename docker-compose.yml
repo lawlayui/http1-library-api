@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: node_app
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: Digital_Library_Admin
+      DB_PWD: Digital_Library_Admin@123
+      DB_NAME: digital_library
+      SECRET_KEY: 'supersecret123'
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sangatKuat67
+      MYSQL_DATABASE: digital_library
+      MYSQL_USER: Digital_Library_Admin
+      MYSQL_PASSWORD: Digital_Library_Admin@123
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init-sql:/docker-entrypoint-initdb.d/
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
