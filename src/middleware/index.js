@@ -1,4 +1,4 @@
-const middlewares  = [require('./queryString'), require('./parameterPath'), require('./jsonMiddleware')];
+const middlewares  = [require('./queryString'), require('./parameterPath'), require('./jsonMiddleware'), require('./verifyToken')];
 
 
 module.exports = async (req, res) => {
