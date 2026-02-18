@@ -1,4 +1,6 @@
 const userService = require('../services/users/userService');
+const eventBus = require('../events/eventBus');
+const {generate_jwt} = require('../core/security');
 
 module.exports.getUsers = async (req, res) => {
     const result = await userService.getUsers();
@@ -40,7 +42,8 @@ module.exports.createUsers = async (req, res) => {
             res.writeHead(201, { 'content-type': 'application/json' });
             res.end(JSON.stringify({
                 status: 'succes',
-                data: result['user_id']
+                data: result['user_id'],
+                token: token ||'You need login'
             }));
             return;
         };
