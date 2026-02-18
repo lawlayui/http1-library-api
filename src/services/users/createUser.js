@@ -1,4 +1,5 @@
 const { getConnection } = require('../../core/getConnection');
+const {generate_hash} = require('../../core/security');
 
 
 module.exports = async (username, password) => {
@@ -17,7 +18,8 @@ module.exports = async (username, password) => {
     }
     try {
         await connection.beginTransaction()
-        const [ result ] = await connection.query('insert into users(username, password, role) values(?, ?, ?)', [username, password, 'user']);
+        const password_hashed = await generate_hash(password);
+        const [ result ] = await connection.query('insert into users(username, password, role) values(?, ?, ?)', [username, password_hashed.data, 'user']);
         await connection.commit();
         return {
             status: 'succes',
