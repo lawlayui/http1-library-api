@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jose = require("jose");
+require('dotenv').config();
 
 
 module.exports.generate_hashed = async (password) => {
@@ -23,4 +24,18 @@ module.exports.verify_hash = async (password, password_hashed) => {
             status: 'error'
         };
     }
+};
+
+const secretKey = new TextEncoder().encode(process.env.SECRET_KEY);
+module.exports.generate_jwt = async (payload) => {
+    const jwt = await new jose.SignJWT(payload)
+        .setProtectedHeader({alg: 'HS256'})
+        .setExpirationTime('1y')
+        .sign(secretKey);
+    return jwt;
+};
+
+module.exports.verify_jwt = async (token) => {
+    const calims = await jose.jwtVerify(token, secretKey);
+    return calims;
 };
