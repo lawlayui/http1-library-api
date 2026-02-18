@@ -1,6 +1,7 @@
 const http = require('http'); //Default http/1.1
 const middleware = require('./src/middleware');
 const matchRoute = require('./src/routes');
+const logger = require('./src/core/logger');
 
 
 const server = http.createServer(async (req, res) => {
@@ -14,6 +15,9 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({
             message: 'internal server error'
         }));
+    }
+    if (res.writableEnded) {
+        logger(req, res);
     }
 });
 
