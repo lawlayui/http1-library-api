@@ -3,10 +3,9 @@ const jose = require("jose");
 require('dotenv').config();
 
 
-module.exports.generate_hashed = async (password) => {
+module.exports.generate_hash = async (password) => {
     const salt = 10;
     const hashed = await bcrypt.hash(password, salt);
-    console.log(hashed);
     return {
         status: 'succes',
         data: hashed
@@ -36,6 +35,17 @@ module.exports.generate_jwt = async (payload) => {
 };
 
 module.exports.verify_jwt = async (token) => {
-    const calims = await jose.jwtVerify(token, secretKey);
-    return calims;
+    try {
+        const calims = await jose.jwtVerify(token, secretKey);
+        return {
+            status: 'succes',
+            data: calims
+        };
+    }catch(err) {
+        console.log(err);
+        return {
+            status: 'error',
+            message: err.message
+        }
+    }
 };
