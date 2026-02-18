@@ -6,6 +6,7 @@ module.exports = async (req, res) => {
         'GET /': 'Ddocumentation',
         'GET /users': 'Taking all users',
         'GET /users/:id': 'Retrieving users by ID',
-        'POST /users': 'Create an account (role will be user)'
+        'POST /users': 'Create an account (role will be user)',
+        'POST /users/register': 'Create an account (role will be user)'
     }));
 }

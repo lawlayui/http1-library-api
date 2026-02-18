@@ -5,5 +5,6 @@ module.exports = {
     'GET /': doct,
     'GET /users': userController.getUsers,
     'GET /users/': userController.getUsersById,
-    'POST /users': userController.createUsers
+    'POST /users': userController.createUsers,
+    'POST /users/register': userController.createUsers
 }
