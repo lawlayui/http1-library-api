@@ -19,7 +19,8 @@ module.exports.createBook = async (req, res) => {
                 req.filename,
                 req.author,
                 req.description,
-                req.release_date
+                req.release_date,
+                req.claims.payload.user_id
             );
 
             res.writeHead(201, { 'content-type': 'application/json' });
@@ -36,4 +37,16 @@ module.exports.createBook = async (req, res) => {
             }));
         }
     });
+};
+
+module.exports.getBookById = async (req, res) => {
+    const result = await booksService.getBookById(req.paramPath);
+    if (!result) {
+        res.writeHead(404, {'content-type': 'application/json'});
+        res.end(JSON.stringify({status: 'error', message: 'resource not found'}));
+        return;
+    }
+    res.writeHead(200, {'content-type': 'application/json'});
+    res.end(JSON.stringify({status: 'succes', data: result}));
+    return;
 };

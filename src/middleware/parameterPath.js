@@ -15,7 +15,12 @@ module.exports = async (req, res) => {
     if (a === '/users') {
         req.url = '/users/';
         req.paramPath = param;
-    } 
+        return;
+    }
+    if (a === '/books') {
+        req.url = '/books/';
+        req.paramPath = param;
+    }
     
 };
 
