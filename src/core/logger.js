@@ -1,6 +1,3 @@
-
-
-
-module.exports = (req, res) => {
-    console.log(`[${new Date().toISOString()}] ${req.socket.remoteAddress} --> ${req.method} ${req.url} --> ${res.statusCode}`);
+module.exports = async (req, res) => {
+    console.log(`${req.socket.remoteAddress} - - [${new Date().toISOString()}]  "${req.method} ${req.url}" ${res.statusCode} -`);
 };

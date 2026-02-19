@@ -7,6 +7,8 @@ module.exports = async (req, res) => {
         'GET /users': 'Taking all users',
         'GET /users/:id': 'Retrieving users by ID',
         'POST /users': 'Create an account (role will be user)',
-        'POST /users/register': 'Create an account (role will be user)'
+        'POST /users/register': 'Create an account (role will be user)',
+        'POST /users/login': 'Login account to get token',
+        'PATCH /users': 'Change role by admin'
     }));
 }

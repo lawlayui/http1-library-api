@@ -60,7 +60,7 @@ CREATE TABLE `users` (
   `role` enum('user','admin') DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +69,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (26,'firure','$2b$10$lJwTpU2KI05ifPMFnba.XOqdHoBQR8oGgmLN74AMN92A9dpxnRBjK','admin'),(44,'firura','$2b$10$8bB2tXawtHo0raQ/ApX1/OT6UtLjw0ASGySn6oIS6jv08JPp/ZYG.','admin');
+INSERT INTO `users` VALUES (1,'test','$2b$10$1rPlVe77kM5RklqCAwPw5.oPyhpHKyGiw5AQ0GbuaqtTPAR8jLXpO','admin'),(2,'user_test','$2b$10$wpes6bjkQZsO2552zJN0be1Yt2pmAQmwxHewYJR48uC48hwy3XONS','admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -82,4 +82,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-17 21:31:32
+-- Dump completed on 2026-02-19  8:28:03

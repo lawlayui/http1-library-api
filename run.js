@@ -3,22 +3,32 @@ const middleware = require('./src/middleware');
 const matchRoute = require('./src/routes');
 const logger = require('./src/core/logger');
 
-
 const server = http.createServer(async (req, res) => {
-    
+    res.on('finish', async () => {
+        await logger(req, res);
+    });
     try {
         await middleware(req, res);
-        await matchRoute(req, res);
-    } catch(err) {
+        const handler = await matchRoute(req, res);
+        if (handler) {
+            if (!res.writableEnded) {
+                await handler(req, res);
+                return;
+            }
+        }
+        if (!res.writableEnded && !handler) {
+            res.writeHead(404, { 'content-type': 'application/json' });
+            res.end(JSON.stringify({ status: 'error', message: 'resource not found' }));
+        }
+    } catch (err) {
         console.log(err);
-        res.writeHead(500, {'content-type': 'application/json'});
-        res.end(JSON.stringify({
-            message: 'internal server error'
-        }));
-    }
-    if (res.writableEnded) {
-        logger(req, res);
-    }
+        if (!res.writableEnded) {
+            res.writeHead(500, { 'content-type': 'application/json' });
+            res.end(JSON.stringify({
+                message: 'internal server error'
+            }));
+        };
+    };
 });
 
 const port = 5000;

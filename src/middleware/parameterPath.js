@@ -1,7 +1,21 @@
 
 module.exports = async (req, res) => {
-    const [path, param] = req.url.split('/').filter(Boolean);
+    const [path, param] = req.url.split('/').filter(Boolean); 
     req.paramPath = param;
-    if (param) req.url = `/${path}/`;
-    return;
+    const a = `/${path}`;
+    if (!param) {
+        return;
+    }
+
+    if (!Number(param)) {
+        req.url = a + `/${param}`;
+        return;
+    }
+
+    if (a === '/users') {
+        req.url = '/users/';
+        req.paramPath = param;
+    } 
+    
 };
+

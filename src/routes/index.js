@@ -1,22 +1,14 @@
 const usersRotues = require('./usersRoutes');
-const booksRouets = require('./booksRoutes');
+const bookRoutes = require('./booksRoutes');
 
 
-const routes = {...usersRotues};
+const routes = {...usersRotues, ...bookRoutes};
 
 
 module.exports = async (req, res) => {
     const handler = routes[`${req.method} ${req.url}`];
     if (handler) {
-        if (!res.writableEnded) {
-            await handler(req, res);
-        }
-        return;
+        return handler;
     };
-    res.writeHead(404, {'cotent-type': 'application/json'});
-    res.end(JSON.stringify({
-        message: 'resource not found'
-    }));
-    
 };
 

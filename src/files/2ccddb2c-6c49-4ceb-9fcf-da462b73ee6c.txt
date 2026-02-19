@@ -1,0 +1,15 @@
+----------------------------757891343881269741668384
+Content-Disposition: form-data; name="file"; filename="Roadmap.txt"
+Content-Type: multipart/form-data
+
+- Pahami struktur dasar Flask: `Flask(__name__)`, routing, view functions.  
+- Kuasai request/response handling: `request`, `jsonify`, status code, header.  
+- Pelajari template engine Jinja2 dan pengelolaan file statis (`url_for`, folder `static`/`templates`).  
+- Implementasikan form handling, validasi, dan session/cookie.  
+- Gunakan decorators untuk middleware custom (auth, logging, dll).  
+- Integrasikan database dengan SQLAlchemy (model, query, migrasi via Flask-Migrate).  
+- Bangun API RESTful (JSON response, error handling terstandar).  
+- Pelajari keamanan: CSRF, XSS, SQL injection, environment variables (.env).  
+- Deploy aplikasi: Gunicorn, Nginx, Ubuntu Server, atau layanan cloud (Render, Railway, dll).  
+- (Opsional) Tambahkan autentikasi (Flask-Login/Flask-JWT), testing (pytest), dan struktur proyek scalable.
+----------------------------757891343881269741668384--

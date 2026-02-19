@@ -1,12 +1,14 @@
 
 
 module.exports = async (req, res) => {
-    if (req.method === "POST") {
+    const notJSON = ['POST /books'];
+    const target = `${req.method} ${req.url}`
+    if (!notJSON.includes(target)) {
         const headers = req.headers;
         const header = 'application/json';
         if (headers['content-type'] === header) {
             return;
-        }
+        };
         res.writeHead(415, {'content-type': 'application/json'});
         res.end(JSON.stringify({
             status: 'error',
