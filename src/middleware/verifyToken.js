@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
     if (!token) {
         res.writeHead(401, {'content-type': 'application/json'});
         res.end(JSON.stringify({status: 'error', message: 'Authorization scheme must be Bearer'}));
+        return;
     }
     const claims = await verify_jwt(token);
     if (claims['status'] === 'error') {

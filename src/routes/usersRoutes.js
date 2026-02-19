@@ -6,5 +6,7 @@ module.exports = {
     'GET /users': userController.getUsers,
     'GET /users/': userController.getUsersById,
     'POST /users': userController.createUsers,
-    'POST /users/register': userController.createUsers
-}
+    'POST /users/register': userController.createUsers,
+    'POST /users/login': userController.userLogin,
+    'PATCH /users': userController.changeRole
+};

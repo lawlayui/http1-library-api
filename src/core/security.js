@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jose = require("jose");
+const uuid = require('uuid');
 require('dotenv').config();
 
 
@@ -42,10 +43,13 @@ module.exports.verify_jwt = async (token) => {
             data: calims
         };
     }catch(err) {
-        console.log(err);
         return {
             status: 'error',
             message: err.message
         }
     }
+};
+
+module.exports.generate_uuid = async () => {
+    return uuid.v4();
 };
