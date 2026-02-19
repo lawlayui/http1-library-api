@@ -1,103 +1,109 @@
 const userService = require('../services/users/userService');
 const { generate_jwt } = require('../core/security');
 
+const sendError = (res, statusCode, message) => {
+    res.writeHead(statusCode, { 'content-type': 'application/json' });
+    res.end(JSON.stringify({ status: 'error', message }));
+};
+
+const sendSuccess = (res, statusCode, data) => {
+    res.writeHead(statusCode, { 'content-type': 'application/json' });
+    res.end(JSON.stringify(data));
+};
+
+const parseRequestBody = (req) => {
+    return new Promise((resolve, reject) => {
+        let data = '';
+        req.on('data', chunk => data += chunk);
+        req.on('end', () => {
+            try {
+                resolve(JSON.parse(data));
+            } catch (err) {
+                reject(err);
+            }
+        });
+    });
+};
 
 module.exports.createUsers = async (req, res) => {
-    let data = '';
-    req.on('data', (chunk) => {
-        data += chunk;
-    });
-    req.on('end', async () => {
-        data = JSON.parse(data);
-        if (data.username || data.password) {
-            const result = await userService.createUsers(data.username, data.password);
-            if (result['status'] === 'error') {
-                res.writeHead(422, { 'content-type': 'application/json' });
-                res.end(JSON.stringify({ status: 'error', message: result.message }));
-                return;
-            }
-            res.writeHead(201, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({
-                status: 'succes',
-                data: result['user_id'],
-                token: 'You need login'
-            }));
+    try {
+        const data = await parseRequestBody(req);
+        if (!data.username || !data.password) {
+            return sendError(res, 400, 'username or password not found');
+        }
 
-            return;
-        };
-        res.writeHead(400, { 'content-type': 'application/json' });
-        res.end(JSON.stringify({
-            status: 'error',
-            message: 'username or password not find'
-        }));
-    });
+        const result = await userService.createUsers(data.username, data.password);
+        if (result.status === 'error') {
+            return sendError(res, 422, result.message);
+        }
+
+        sendSuccess(res, 201, {
+            status: 'succes',
+            data: result.user_id,
+            token: 'You need login'
+        });
+    } catch (err) {
+        sendError(res, 400, 'Invalid request body');
+    }
 };
 
 module.exports.getUsers = async (req, res) => {
     const result = await userService.getUsers();
     if (result) {
-        res.writeHead(200, { 'content-type': 'application/json' });
-        res.end(JSON.stringify({ status: 'succes', data: result }));
-        return;
+        return sendSuccess(res, 200, { status: 'succes', data: result });
     }
-    res.writeHead(404, { 'content-type': 'application/json' });
-    res.end(JSON.stringify({ status: 'error', message: 'resource not found' }));
-
+    sendError(res, 404, 'resource not found');
 };
 
 module.exports.getUsersById = async (req, res) => {
     const result = await userService.getUsersByIdOrUsername(req.paramPath);
     if (result) {
-        res.writeHead(200, { 'content-type': 'application/json' });
-        res.end(JSON.stringify({ status: 'succes', data: { username: result.username, role: result.role } }));
-        return;
+        return sendSuccess(res, 200, {
+            status: 'succes',
+            data: { username: result.username, role: result.role }
+        });
     }
-    res.writeHead(404, { 'content-type': 'application/json' });
-    res.end(JSON.stringify({ status: 'error', message: 'resource not found' }));
+    sendError(res, 404, 'resource not found');
 };
 
 module.exports.userLogin = async (req, res) => {
-    let data = '';
-    req.on('data', chunk => data += chunk);
-    req.on('end', async () => {
-        data = JSON.parse(data);
-        if (data.password || data.username) {
-            const result_read = await userService.getUsersByIdOrUsername(null, data.username);
-            const password_hashed = result_read.password;
-            const result_login = await userService.userLogin(password_hashed, data.password);
+    try {
+        const data = await parseRequestBody(req);
+        if (!data.password || !data.username) {
+            return sendError(res, 422, 'missing username or password');
+        }
 
-            if (result_login.status === 'error') {
-                res.writeHead(401, { 'content-type': 'application/json' });
-                res.end(JSON.stringify({ status: 'error', message: result_login.message }));
-                return;
-            };
-            res.writeHead(200, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({ status: 'succes', token: await generate_jwt({ user_id: result_read.id, role: result_read.role }) }));
-            return;
-        };
-        res.writeHead(422, { 'content-type': 'application/json' });
-        res.end(JSON.stringify({ status: 'error', message: 'missing key error' }));
-        return;
-    });
+        const user = await userService.getUsersByIdOrUsername(null, data.username);
+        if (!user) {
+            return sendError(res, 404, 'user not found');
+        }
+
+        const loginResult = await userService.userLogin(user.password, data.password);
+        if (loginResult.status === 'error') {
+            return sendError(res, 401, loginResult.message);
+        }
+
+        const token = await generate_jwt({ user_id: user.id, role: user.role });
+        sendSuccess(res, 200, { status: 'succes', token });
+    } catch (err) {
+        sendError(res, 400, 'Invalid request body');
+    }
 };
 
 module.exports.changeRole = async (req, res) => {
-    let data = '';
-    req.on('data', chunk => data += chunk);
-    req.on('end', async () => {
-        data = JSON.parse(data);
-        if (data.user_id && data.role) {
-            if (req.claims.payload.role === 'user') {
-                res.writeHead(422, {'content-type': 'application/json'});
-                res.end(JSON.stringify({status: 'error', message: 'role must be admin'}));
-                return;
-            };
-            const result = await userService.changeRole(data.user_id, data.role);
-            res.writeHead(200, {'content-type': 'application/json'});
-            res.end(JSON.stringify({status: 'succes', message: 'relogin to change payload'}));
-            return;
-        };
-        res.writeHead(422, {'content-type': 'application/json'});
-        res.end(JSON.stringify({status: 'error', message: 'missing key user_id or role'}));
-    });
+    try {
+        const data = await parseRequestBody(req);
+        if (!data.user_id || !data.role) {
+            return sendError(res, 422, 'missing user_id or role');
+        }
+
+        if (req.claims.payload.role === 'user') {
+            return sendError(res, 422, 'role must be admin');
+        }
+
+        await userService.changeRole(data.user_id, data.role);
+        sendSuccess(res, 200, { status: 'succes', message: 'relogin to change payload' });
+    } catch (err) {
+        sendError(res, 400, 'Invalid request body');
+    }
 };

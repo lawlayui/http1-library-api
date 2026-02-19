@@ -9,6 +9,7 @@ module.exports = async (req, res) => {
         'POST /users': 'Create an account (role will be user)',
         'POST /users/register': 'Create an account (role will be user)',
         'POST /users/login': 'Login account to get token',
-        'PATCH /users': 'Change role by admin'
+        'PATCH /users': 'Change role by admin',
+        'POST /books': 'upload books'
     }));
 }

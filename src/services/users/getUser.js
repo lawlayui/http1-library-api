@@ -1,9 +1,7 @@
-const {pool} = require('../../core/getConnection');
-const eventBus = require('../../events/eventBus');
-
+const { pool } = require('../../core/getConnection');
 
 module.exports = async () => {
-        const [result] = await pool.query('select id, username, role from users');
-        return result;
-}
+    const [result] = await pool.query('SELECT id, username, role FROM users');
+    return result;
+};
 

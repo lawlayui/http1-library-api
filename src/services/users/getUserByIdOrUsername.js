@@ -1,18 +1,19 @@
 const { pool } = require('../../core/getConnection');
 
 
-module.exports = async (user_id=null, username=null) => {
-    let sql = 'select * from users where ';
-    let parms = [];
+module.exports = async (userId = null, username = null) => {
+    let sql = 'SELECT * FROM users WHERE ';
+    const params = [];
 
-    if (user_id) {
+    if (userId) {
         sql += 'id = ? ';
-        parms.push(user_id);
+        params.push(userId);
     }
     if (username) {
         sql += 'username = ? ';
-        parms.push(username); 
+        params.push(username);
     }
-    const [result] = await pool.query(sql, parms);
+
+    const [result] = await pool.query(sql, params);
     return result[0];
-};  
+};
