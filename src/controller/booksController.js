@@ -50,3 +50,42 @@ module.exports.getBookById = async (req, res) => {
     res.end(JSON.stringify({status: 'succes', data: result}));
     return;
 };
+
+module.exports.getBooks = async (req, res) => {
+    const result = await booksService.getBooks();
+    res.writeHead(200, {'content-type': 'application/json'});
+    res.end(JSON.stringify({status: 'succes', data: result}));
+    return;
+}
+
+module.exports.updateBook = async (req, res) => {
+    const result = await booksService.updateBook(
+        req.filePath,
+        req.filename,
+        req.author,
+        req.description,
+        req.release_date,
+        req.claims.payload.user_id,
+        req.paramPath
+    );
+    if (result.affectedRows === 0) {
+        res.writeHead(404, {'content-type': 'application/json'});
+        res.end(JSON.stringify({status: 'error', message: 'resource not found'}));
+        return;
+    }
+    res.writeHead(200, {'content-type': 'application/json'});
+    res.end(JSON.stringify({status: 'succes', message: 'succes update book'}));
+    return;
+};
+
+module.exports.deleteBook = async (req, res) => {
+    const result = await booksService.deleteBook(req.paramPath, req.claims.payload.user_id);
+    if (result.affectedRows === 0) {
+        res.writeHead(404, {'content-type': 'application/json'});
+        res.end(JSON.stringify({status: 'error', message: 'resource not found'}));
+        return;
+    }
+    res.writeHead(200, {'content-type': 'application/json'});
+    res.end(JSON.stringify({status: 'succes', message: 'succes delete book'}));
+    return;
+};

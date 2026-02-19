@@ -10,6 +10,10 @@ module.exports = async (req, res) => {
         'POST /users/register': 'Create an account (role will be user)',
         'POST /users/login': 'Login account to get token',
         'PATCH /users': 'Change role by admin',
-        'POST /books': 'upload books'
+        'POST /books': 'upload books',
+        'GET /books': 'Taking all books',
+        'GET /books/:id': 'Retrieving books by ID',
+        'PATCH /books/:id': 'Updating books by ID',
+        'DELETE /books/:id': 'Deleting books by ID'
     }));
 }

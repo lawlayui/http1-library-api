@@ -1,7 +1,7 @@
 
 
 module.exports = async (req, res) => {
-    const needMultipartHeader = ['POST /books']
+    const needMultipartHeader = ['POST /books', 'PATCH /books/'];
     if (needMultipartHeader.includes(`${req.method} ${req.url}`)) {
         const headers = req.headers;
         const header = 'multipart/form-data';

@@ -1,7 +1,7 @@
 
 
 module.exports = async (req, res) => {
-    const routeAdmin = ['PATCH /users', 'POST /books'];
+    const routeAdmin = ['PATCH /users', 'POST /books', 'PATCH /books', 'DELETE /books/'];
     const target = `${req.method} ${req.url}`;
     if (routeAdmin.includes(target)) {
         const role = req.claims.payload.role;
